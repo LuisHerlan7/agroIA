@@ -23,6 +23,9 @@ tambien funciona http://localhost:8000/
 ------------------------------
 FRONTEND
 -------------------------------
+
+cd frontend
+
 npm install
 npm run dev
 
