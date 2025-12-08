@@ -6,8 +6,10 @@ from pathlib import Path
 import json
 import io
 
-MODEL_PATH = Path('../models/modelo_hojas.h5')
-CLASS_INDICES_PATH = Path('../models/class_indices.json')
+# Use absolute paths from the project root
+PROJECT_ROOT = Path(__file__).parent.parent
+MODEL_PATH = PROJECT_ROOT / 'models' / 'modelo_hojas.h5'
+CLASS_INDICES_PATH = PROJECT_ROOT / 'models' / 'class_indices.json'
 IMG_SIZE = (224, 224)
 
 _model = None
@@ -31,7 +33,14 @@ def load_class_indices():
     return _class_indices
 
 def preprocess_image(image_bytes):
-    img = Image.open(io.BytesIO(image_bytes))
+    if not image_bytes or len(image_bytes) == 0:
+        raise ValueError("Imagen vacía o inválida")
+
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+    except Exception as e:
+        # Re-raise with a clearer message for the API response
+        raise ValueError(f"No se pudo abrir la imagen: {e}")
     img = img.convert('RGB')
     img = img.resize(IMG_SIZE)
     img_array = np.array(img)
@@ -39,9 +48,25 @@ def preprocess_image(image_bytes):
     img_array = np.expand_dims(img_array, axis=0)
     return img_array
 
+def load_disease_info():
+    """Load disease information and treatment recommendations"""
+    global _disease_info
+    if not hasattr(load_disease_info, '_cache'):
+        try:
+            disease_info_path = PROJECT_ROOT / 'models' / 'disease_info.json'
+            if disease_info_path.exists():
+                with open(disease_info_path, 'r', encoding='utf-8') as f:
+                    load_disease_info._cache = json.load(f)
+            else:
+                load_disease_info._cache = {}
+        except Exception:
+            load_disease_info._cache = {}
+    return load_disease_info._cache
+
 def predict_disease(image_bytes):
     model = load_model()
     class_indices = load_class_indices()
+    disease_info = load_disease_info()
     
     processed_img = preprocess_image(image_bytes)
     predictions = model.predict(processed_img, verbose=0)
@@ -52,5 +77,14 @@ def predict_disease(image_bytes):
     idx_to_class = {v: k for k, v in class_indices.items()}
     predicted_class = idx_to_class[predicted_class_idx]
     
-    return predicted_class, confidence
+    # Get detailed info if available
+    info = disease_info.get(predicted_class, {})
+    
+    return {
+        "disease_key": predicted_class,
+        "disease_name": info.get("nombre_display", predicted_class),
+        "description": info.get("descripcion", ""),
+        "treatment": info.get("tratamiento", ""),
+        "confidence": confidence
+    }
 

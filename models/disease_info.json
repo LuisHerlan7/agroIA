@@ -1,0 +1,22 @@
+{
+  "Healthy": {
+    "nombre_display": "Sano",
+    "descripcion": "La planta está en perfecto estado de salud.",
+    "tratamiento": "Mantener las condiciones actuales de cultivo. Continuar con el riego regular y nutrición adecuada."
+  },
+  "Powdery": {
+    "nombre_display": "Oídio (Powdery Mildew)",
+    "descripcion": "La hoja presenta síntomas de oídio, una enfermedad fúngica que causa un polvo blanco en las hojas.",
+    "tratamiento": "Se recomienda aplicar fungicida a base de azufre o aceite mineral. Mejorar la circulación de aire reduciendo la humedad relativa. Aislar plantas afectadas."
+  },
+  "Rust": {
+    "nombre_display": "Roya",
+    "descripcion": "Se detectó roya, una enfermedad fúngica que causa manchas rojizas o anaranjadas en el envés de las hojas.",
+    "tratamiento": "Aplicar fungicida cúprico o a base de azufre. Aumentar espaciamiento entre plantas para mejorar circulación de aire. Remover hojas muy afectadas."
+  },
+  "Scab": {
+    "nombre_display": "Sarna (Scab)",
+    "descripcion": "La hoja muestra síntomas de sarna, una enfermedad bacteriana que causa lesiones marrones y costrosas.",
+    "tratamiento": "Se recomienda aplicar fungicida a base de cobre. Reducir el riego y aislar la planta afectada. Mejorar drenaje del suelo."
+  }
+}

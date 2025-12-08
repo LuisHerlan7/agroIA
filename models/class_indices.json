@@ -1,0 +1,6 @@
+{
+  "Healthy": 0,
+  "Powdery": 1,
+  "Rust": 2,
+  "Scab": 3
+}
