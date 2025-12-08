@@ -29,16 +29,27 @@ export default function Home() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", image);
+    try {
+      const formData = new FormData();
+      formData.append("file", image);
 
-    const res = await fetch("http://localhost:8000/predict", {
-      method: "POST",
-      body: formData,
-    });
+      const res = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        body: formData,
+      });
 
-    const data = await res.json();
-    setResult(data.resultado || "No se obtuvo respuesta");
+      const data = await res.json();
+      
+      if (data.error) {
+        setResult(`Error: ${data.error}`);
+      } else if (data.resultado) {
+        setResult(`${data.resultado} (Confianza: ${data.confianza}%)`);
+      } else {
+        setResult("No se obtuvo respuesta");
+      }
+    } catch (error) {
+      setResult(`Error de conexión: ${error}`);
+    }
   };
 
   return (
